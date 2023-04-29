@@ -1,0 +1,4 @@
+TELEGRAM_TOKEN = ''
+MYSQL_USER = ''
+MYSQL_PASS = ''
+MYSQL_ADDR = ''
