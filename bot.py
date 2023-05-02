@@ -12,6 +12,12 @@ mydb = mysql.connector.connect(
   password=secrets.MYSQL_PASS
 )
 
+# Создаём необходимые таблицы в базе данных
+cur = mydb.cursor()
+cur.execute("CREATE TABLE IF NOT EXISTS events (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255), text VARCHAR)")
+cur.execute("CREATE TABLE IF NOT EXISTS internships (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255), text VARCHAR)")
+cur.execute("CREATE TABLE IF NOT EXISTS vacancies (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255), text VARCHAR)")
+
 # Включаем логгирование
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -19,9 +25,22 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 main_keyboard = [
-  [InlineKeyboardButton("📅Мероприятия", callback_data="1")],
-  [InlineKeyboardButton("🗿Стажировки", callback_data="2")],
-  [InlineKeyboardButton("💯Вакансии", callback_data="3")],
+  [InlineKeyboardButton("📅 Мероприятия", callback_data="1")],
+  [InlineKeyboardButton("🗿 Стажировки", callback_data="2")],
+  [InlineKeyboardButton("💯 Вакансии", callback_data="3")],
+]
+
+admin_keyboard = [
+  [InlineKeyboardButton("📅 Мероприятия", callback_data="1")],
+  [InlineKeyboardButton("🗿 Стажировки", callback_data="2")],
+  [InlineKeyboardButton("💯 Вакансии", callback_data="3")],
+  [InlineKeyboardButton("🆕 Администрирование", callback_data="adm")]
+]
+
+admin_actions_keyboard = [
+  [InlineKeyboardButton("📎 Добавить...", callback_data="adm_add")],
+  [InlineKeyboardButton("🚫 Удалить...", callback_data="adm_del")],
+  [InlineKeyboardButton("Назад", callback_data="0")]
 ]
 
 back_keyboard = [
@@ -31,8 +50,14 @@ back_keyboard = [
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
   """Отправляет сообщение старта."""
-  reply_markup = InlineKeyboardMarkup(main_keyboard)
-  await update.message.reply_text("Приветствуем тебя в боте Центра Карьеры! Выбери нужную тебе категорию:", reply_markup=reply_markup)
+  user_id = update.message.from_user.id
+  context.user_data["user_id"] = user_id
+  if user_id in secrets.ADMIN_IDS:
+    reply_markup = InlineKeyboardMarkup(admin_keyboard)
+    await update.message.reply_text("Приветствуем тебя в боте Центра Карьеры! Выбери нужную тебе категорию:", reply_markup=reply_markup)
+  else:
+    reply_markup = InlineKeyboardMarkup(main_keyboard)
+    await update.message.reply_text("Приветствуем тебя в боте Центра Карьеры! Выбери нужную тебе категорию:", reply_markup=reply_markup)
 
 
 async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -51,6 +76,10 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
   elif query.data == "3":
     reply_markup = InlineKeyboardMarkup(back_keyboard)
     await query.edit_message_text("Открытые вакансии:\n\n🔹Пока что открытых вакансий нет.", reply_markup=reply_markup)
+  elif query.data == "adm":
+    if context.user_data.get("user_id", 0) not in secrets.ADMIN_IDS: return
+    reply_markup = InlineKeyboardMarkup(admin_actions_keyboard)
+    await query.edit_message_text("Выберите действие:", reply_markup=reply_markup)
 
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
