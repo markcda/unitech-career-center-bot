@@ -9,7 +9,8 @@ import logging
 mydb = mysql.connector.connect(
   host=secrets.MYSQL_ADDR,
   user=secrets.MYSQL_USER,
-  password=secrets.MYSQL_PASS
+  password=secrets.MYSQL_PASS,
+  database=secrets.MYSQL_DATABASE
 )
 
 # Создаём необходимые таблицы в базе данных
