@@ -1,16 +1,16 @@
 #!/usr/bin/env python
 
-# import mysql.connector
+import mysql.connector
 import secrets
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import Application, CallbackQueryHandler, CommandHandler, ContextTypes
 import logging
 
-# mydb = mysql.connector.connect(
-#   host=secrets.MYSQL_ADDR,
-#   user=secrets.MYSQL_USER,
-#   password=secrets.MYSQL_PASS
-# )
+mydb = mysql.connector.connect(
+  host=secrets.MYSQL_ADDR,
+  user=secrets.MYSQL_USER,
+  password=secrets.MYSQL_PASS
+)
 
 # Включаем логгирование
 logging.basicConfig(
