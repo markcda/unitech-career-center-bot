@@ -45,7 +45,7 @@ admin_actions_keyboard = [
 admin_add_actions_keyboard = [
   [InlineKeyboardButton("Мероприятие", callback_data="add_vnt")],
   [InlineKeyboardButton("Стажировка", callback_data="add_int")],
-  [InlineKeyboardButton("Вакансия", callback_data="add_vcn")]
+  [InlineKeyboardButton("Вакансия", callback_data="add_vcn")],
   [InlineKeyboardButton("Назад", callback_data="adm")]
 ]
 back_keyboard = [
