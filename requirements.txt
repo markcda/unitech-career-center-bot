@@ -1,2 +1,3 @@
 mysqlclient
 python-telegram-bot
+vk-api

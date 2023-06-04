@@ -1,0 +1,6 @@
+__pycache__
+*.pyc
+.env
+.git
+env-example
+pythonanywhere.py
